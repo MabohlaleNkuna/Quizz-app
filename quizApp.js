@@ -45,6 +45,7 @@ function askQuestion() {
         }
     }, 1000);
 
+    console.log(); 
     rl.question('Select your answer (1-4): ', (userAnswer) => {
         clearInterval(questionTimer); 
         handleUserAnswer(userAnswer.trim());
