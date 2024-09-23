@@ -52,11 +52,11 @@ function askQuestion() {
 }
 
 function handleUserAnswer(userAnswer) {
-    const validInput = /^[1-4]$/.test(userAnswer); // Regex to check if input is between 1 and 4
+    const validInput = /^[1-4]$/.test(userAnswer); 
 
     if (!validInput) {
         console.log("Invalid input. Please enter a number between 1 and 4.");
-        askQuestion(); // Ask the question again if input is invalid
+        askQuestion();
     } else {
         checkAnswer(userAnswer);
     }
