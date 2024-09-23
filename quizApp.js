@@ -14,9 +14,8 @@ const questions = [
 
 let currentQuestionIndex = 0;
 let score = 0;
-let questionTimeRemaining = 30; 
-let totalQuizTimeRemaining = 150; 
-let quizTimer, questionTimer;
+let totalQuizTimeRemaining = 150;
+let quizTimer;
 
 function updateTotalTime() {
     process.stdout.write(`\rTotal quiz time remaining: ${totalQuizTimeRemaining} seconds  `);
@@ -28,32 +27,16 @@ function askQuestion() {
         return;
     }
 
-    console.log(`\nQuestion ${currentQuestionIndex + 1}: ${questions[currentQuestionIndex].question}`);
+    console.log(`\n\nQuestion ${currentQuestionIndex + 1}: ${questions[currentQuestionIndex].question}`);
     questions[currentQuestionIndex].options.forEach(option => console.log(option));
 
-    questionTimeRemaining = 30; 
-    questionTimer = setInterval(() => {
-        questionTimeRemaining--;
-        totalQuizTimeRemaining--;
-
-        if (questionTimeRemaining <= 0 || totalQuizTimeRemaining <= 0) {
-            console.log(`\nTime's up for this question! The correct answer was: ${questions[currentQuestionIndex].answer}`);
-            clearInterval(questionTimer);
-            nextQuestion();
-        } else {
-            updateTotalTime(); 
-        }
-    }, 1000);
-
-    console.log(); 
-    rl.question('Select your answer (1-4): ', (userAnswer) => {
-        clearInterval(questionTimer); 
+    rl.question('\nSelect your answer (1-4): ', (userAnswer) => {
         handleUserAnswer(userAnswer.trim());
     });
 }
 
 function handleUserAnswer(userAnswer) {
-    const validInput = /^[1-4]$/.test(userAnswer); 
+    const validInput = /^[1-4]$/.test(userAnswer);
 
     if (!validInput) {
         console.log("Invalid input. Please enter a number between 1 and 4.");
@@ -84,19 +67,28 @@ function nextQuestion() {
 
 function endQuiz() {
     clearInterval(quizTimer);
-    clearInterval(questionTimer);
     rl.close();
     console.log(`\nQuiz over! Your final score is: ${score}/${questions.length}`);
 }
 
 function startQuiz() {
     console.log("\nWelcome to the JavaScript Quiz!");
+
     quizTimer = setInterval(() => {
         totalQuizTimeRemaining--;
+
+        if (totalQuizTimeRemaining === 120 || totalQuizTimeRemaining === 90 || totalQuizTimeRemaining === 60 || totalQuizTimeRemaining === 30) {
+            currentQuestionIndex++;
+            askQuestion();
+        }
+
         if (totalQuizTimeRemaining <= 0) {
-            console.log('\nTotal time is up for the quiz!');
+            console.log('\nTotal quiz time is up!');
+            clearInterval(quizTimer);
             endQuiz();
-        } 
+        }
+
+        updateTotalTime();
     }, 1000);
 
     askQuestion();
